@@ -19,21 +19,19 @@ import {
  * @param {object} res
  * @returns {object} reflection object
  */
-const createAdim = async (req, res) => {
+const createAdmin = async (req, res) => {
     const {
         email, first_name, last_name, password
     } = req.body;
 
     const { is_admin } = req.user;
     const created_on = moment(new Date());
-
-    const isAdmin = true;
+    const adminUser = true;
 
     if(!is_admin === false) {
         errorMessage.error = 'Sorry you are unauthorized to create admin users';
         return res.status(status.bad).send(errorMessage);
     }
-
     if (isEmpty(email) || 
         isEmpty(first_name) || 
         isEmpty(last_name) || 
@@ -42,33 +40,26 @@ const createAdim = async (req, res) => {
         errorMessage.error = 'Email, password, first name and last name field cannot be empty';
         return res.status(status.bad).send(errorMessage);
     }
-    
     if(isValidEmail(email)) {
         errorMessage.error = 'Email not valid';
         return res.status(status.bad).send(errorMessage);
     }
-
     if(isValidPassword(password)) {
         errorMessage.error = 'Password not valid';
         return res.status(status.bad).send(errorMessage);
     }
 
     const hashedPassword = hashPassword(password);
-    const createUserQuery = `INSERT INTO users(
-        email,
-        first_name,
-        last_name,
-        password,
-        is_admin,
-        created_on)
-        VALUES($1, $2, $3, $4, $5, $6)
-        returning *`;
+    const createUserQuery = `INSERT INTO users(email,first_name,last_name,
+                                password,is_admin,created_on)
+                                VALUES($1, $2, $3, $4, $5, $6)
+                                returning *`;
     const values = [
         email,
         first_name,
         last_name,
         hashedPassword,
-        isAdmin,
+        adminUser,
         created_on,
     ];
 
@@ -91,7 +82,7 @@ const createAdim = async (req, res) => {
             return res.statis(status.error).send(error);
         }
     };
-
+};
 
 /**
  * Update A User to Admin
@@ -100,6 +91,45 @@ const createAdim = async (req, res) => {
  * @returns {object} updated user
  */
 const updateUserToAdmin =  async (req, res) => {
+    const { id } = req.params;
+    const { isAdmin } = req.body;
+    const { is_admin } = req.user;
 
-}
+    if(!is_admin === false) {
+        errorMessage.error = 'Sorry you are unauthorized to make an user admin';
+        return res.status(status.bad).send(errorMessage);
+    }
+    if( isAdmin === '') {
+        errorMessage.error = 'Admin status needed';
+        return res.status(status.bad).send(errorMessage);
+    }
+
+    const findUserQuery = `SELECT * FROM users WHERE id=$1`;
+    const updateUserQuery = `UPDATE users SET is_admin=$1 WHERE id=$2 returning *`;
+
+    try {
+        const { rows } = await dbQuery.query(findUserQuery, id);
+        const dbEntry = rows[0];
+        if(!dbEntry) {
+            errorMessage.error = 'User you searched for does not exist';
+            return res.status(status.notfound).send(errorMessage);
+        }
+        const values = [ 
+            id, 
+            isAdmin 
+        ];
+        const response = await dbQuery.query(updateUserQuery, values);
+        const updateResult =  response[0];
+        delete updateResult.password;
+        successMessage.data = updateResult;
+        return res.status(status.success).send(successMessage);
+    } catch (error) {
+        errorMessage.error = 'Operation unsuccessful';
+        return res.status(status.error).send(errorMessage);
+    };
+};
+
+export {
+    createAdmin,
+    updateUserToAdmin,
 };
