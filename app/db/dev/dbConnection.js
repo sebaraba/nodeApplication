@@ -20,6 +20,7 @@ const createUsersTable = () => {
     first_name VARCHAR(100), 
     last_name VARCHAR(100), 
     password VARCHAR(100) NOT NULL,
+    is_admin BOOLEAN NOT NULL,
     created_on DATE NOT NULL)`;
 
     pool.query(createUsersQuery)
