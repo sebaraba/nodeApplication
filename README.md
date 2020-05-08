@@ -8,7 +8,7 @@ For the initial iteration of this project, it can be run with:
 `node run`
 
 It exposes the following 3 endpoints:
-    - healthcheck;
-    - register;
-    - login;
+* healthcheck;
+* register;
+* login;
 
