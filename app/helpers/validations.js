@@ -1,4 +1,26 @@
-import env from '../../env';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import env from '../../env.js';
+
+/**
+ * Hash password before saving to db
+ * @param {string} password
+ * @returns {string} return hashed password 
+ */
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
+const hashPassword = password => bcrypt.hashSync(password, salt);
+
+
+/**
+ * Compare hashed and plain text passwords
+ * @param {string} hashedPassword
+ * @param {string} password
+ * @returns {boolean} True/Fales 
+ */
+const comparePassword = (hashedPassword, password) => {
+  return bcrypt.compareSync(hashedPassword, password)
+}
 
 /**
    * isValidEmail helper method
@@ -45,9 +67,35 @@ const empty = (input) => {
   }
 };
 
-export {
+/**
+ * Generate JWT
+ * @param {string} id
+ * @param {string} email
+ * @param {string} first_name
+ * @param {string} last_name
+ * @param {bool}   is_admin
+ */
+
+const generateJWT = (id, email, first_name, last_name, is_admin) => {
+  const token = jwt.sign({
+    email,
+    user_id: id,
+    is_admin,
+    first_name,
+    last_name,
+  },
+  env.secret, 
+  { expiresIn: '3d'}
+  );
+  return token;
+};
+
+export  {
+  hashPassword,
+  comparePassword,
   isValidEmail,
   validatePassword,
   isEmpty,
-  empty
+  empty,
+  generateJWT
 };
