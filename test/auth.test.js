@@ -26,4 +26,4 @@ describe('Auth Service Tests', () => {
         nextSpy.calledOnce.should.equal(true);
         nextSpy.callCount.should.equal(1);
     });
-})
+});

@@ -33,11 +33,11 @@ const isValidEmail = (email) => {
 };
 
 /**
-   * validatePassword helper method
+   * isValidPassword helper method
    * @param {string} password
    * @returns {Boolean} True or False
    */
-const validatePassword = (password) => {
+const isValidPassword = (password) => {
     const regEx = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/;
     return regEx.test(password);
 };
@@ -94,7 +94,7 @@ export  {
   hashPassword,
   comparePassword,
   isValidEmail,
-  validatePassword,
+  isValidPassword,
   isEmpty,
   empty,
   generateJWT
