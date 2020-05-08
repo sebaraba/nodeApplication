@@ -1,6 +1,6 @@
 import chai from 'chai';
 import { generateJWT } from '../app/helpers/validations.js';
-import { verifyToken } from '../app/auth/validateToken.js'
+import { verifyToken } from '../app/middleware/validateToken.js'
 import sinMock from 'sinon-express-mock';
 import sinon from 'sinon';
 
