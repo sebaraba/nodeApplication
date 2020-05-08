@@ -1,0 +1,105 @@
+import moment from 'moment';
+import dbQuery from '../db/dev/dbQuery.js';
+
+import {
+    hashPassword,
+    isValidEmail,
+    isValidPassword,
+    isEmpty,
+    generateJWT,
+  } from '../helpers/validations';
+
+import {
+  errorMessage, successMessage, status,
+} from '../helpers/status';
+
+/**
+ * Create A Admin
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} reflection object
+ */
+const createAdim = async (req, res) => {
+    const {
+        email, first_name, last_name, password
+    } = req.body;
+
+    const { is_admin } = req.user;
+    const created_on = moment(new Date());
+
+    const isAdmin = true;
+
+    if(!is_admin === false) {
+        errorMessage.error = 'Sorry you are unauthorized to create admin users';
+        return res.status(status.bad).send(errorMessage);
+    }
+
+    if (isEmpty(email) || 
+        isEmpty(first_name) || 
+        isEmpty(last_name) || 
+        isEmpty(password)) {
+
+        errorMessage.error = 'Email, password, first name and last name field cannot be empty';
+        return res.status(status.bad).send(errorMessage);
+    }
+    
+    if(isValidEmail(email)) {
+        errorMessage.error = 'Email not valid';
+        return res.status(status.bad).send(errorMessage);
+    }
+
+    if(isValidPassword(password)) {
+        errorMessage.error = 'Password not valid';
+        return res.status(status.bad).send(errorMessage);
+    }
+
+    const hashedPassword = hashPassword(password);
+    const createUserQuery = `INSERT INTO users(
+        email,
+        first_name,
+        last_name,
+        password,
+        is_admin,
+        created_on)
+        VALUES($1, $2, $3, $4, $5, $6)
+        returning *`;
+    const values = [
+        email,
+        first_name,
+        last_name,
+        hashedPassword,
+        isAdmin,
+        created_on,
+    ];
+
+    try {
+        const { rows } = await dbQuery.query(createUserQuery, values);
+        const dbEntry = rows[0];
+        delete dbEntry.password;
+        const token = generateJWT(
+                        dbEntry.id, dbEntry.email, 
+                        dbEntry.first_name, dbEntry.last_name, 
+                        dbEntry.is_admin); 
+        successMessage.data = dbEntry;
+        successMessage.data.token = token;
+        return res.status(status.created).send(successMessage);
+    } catch(error) {
+        if(error.routine === '_bt_check_unique') {
+            errorMessage.error = 'Admin with that email already exist';
+            return res.status(status.conflict).send(errorMessage);
+        } else {
+            return res.statis(status.error).send(error);
+        }
+    };
+
+
+/**
+ * Update A User to Admin
+ * @param {object} req 
+ * @param {object} res 
+ * @returns {object} updated user
+ */
+const updateUserToAdmin =  async (req, res) => {
+
+}
+};
