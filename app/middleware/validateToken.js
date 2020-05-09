@@ -18,11 +18,17 @@ dotenv.config();
  * @param {object} next
  * @returns {object|void} response object 
  */
-const verifyToken = async (res, req, next) => {
-    var { token } = req.headers;
+const verifyToken = async (err, res, req, next) => {
+    try {
+        var { token } = req.headers;
+    } catch (error) {
+        errorMessage.error = 'Please login first';
+        return res.status(status.bad).send(errorMessage);
+    }
+    console.log(token);
     
     if(!token) {
-        console.log(res.status(status.bad).send(errorMessage));
+        res.status(status.bad).send(errorMessage);
         return res.status(status.bad).send(errorMessage);
     }
 
@@ -42,4 +48,4 @@ const verifyToken = async (res, req, next) => {
     }
 };
 
-export { verifyToken };
+export default verifyToken;
