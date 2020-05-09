@@ -1,18 +1,18 @@
 import moment from 'moment';
-import dbQuery from '../db/dev/dbQuery';
+import dbQuery from '../db/dev/dbQuery.js';
 
 import {
   hashPassword,
   comparePassword,
   isValidEmail,
-  validatePassword,
+  isValidPassword,
   isEmpty,
   generateJWT,
-} from '../helpers/validations';
+} from '../helpers/validations.js';
 
 import {
   errorMessage, successMessage, status,
-} from '../helpers/status';
+} from '../helpers/status.js';
 
 /**
  * Create A User
@@ -34,8 +34,8 @@ const registerUser = async (req, res) => {
       errorMessage.error = 'Please enter a valid email';
       return res.status(status.bad).send(errorMessage);
     }
-    if (!validatePassword(password)) {
-      errorMessage.error = 'Password must be more than five(8) characters';
+    if (!isValidPassword(password)) {
+      errorMessage.error = 'Password must be larger than eigth characters';
       return res.status(status.bad).send(errorMessage);
     }
 
@@ -59,8 +59,8 @@ const registerUser = async (req, res) => {
         dbResponse.first_name, dbResponse.last_name, dbResponse.is_admin);
       successMessage.data = dbResponse;
       successMessage.data.token = token;
-      return res.status(status.success).send(successMessage);
-    } catch {
+      return res.status(status.success).send({user: dbResponse.email, token: token, data: successMessage});
+    } catch (error) {
       if (error.routine === '_bt_check_unique') {
         errorMessage.error = 'User with that email already exist';
         return res.status(status.conflict).send(errorMessage);
@@ -83,7 +83,7 @@ const siginUser = async (req, res) => {
         errorMessage.error = 'Email or password detail is missing';
         return res.status(status.bad).send(errorMessage);
     }
-    if ( !isValidEmail(email) || !validatePassword(password) ) {
+    if ( !isValidEmail(email) || !isValidPassword(password) ) {
         errorMessage.error = 'Please enter a valid email or password';
         return res.status(status.bad).send(errorMessage);
     }
@@ -114,7 +114,34 @@ const siginUser = async (req, res) => {
     };
 };
 
+/**
+ * @params {Object} req
+ * @params {Object} res
+ * @returns return firstname and Lastname
+ */
+const searchFirstOrLastName = async (req, res) => {
+    const { first_name, last_name } = req.query;
+    const searchForQuery = `SELECT * FROM users WHERE first_name=$1 OR last_name=$2 ORDER BY id DESC`;
+    try {
+        const { rows } = await dbQuery.query(searchForQuery, [first_name, last_name]);
+        const dbEntry = rows;
+        if(!dbEntry) {
+            errorMessage.error = 'User not found';
+            return res.status(status.notfound).send(errorMessage);
+        }
+        delete dbEntry.password;
+        successMessage.data = dbEntry;
+        return res.status(status.success).send(successMessage);
+    } catch (error) {
+        errorMessage.error = 'Operation unsuccessful';
+        console.log(error);
+        return res.status(status.error).send(errorMessage);
+    }
+};
+
+
 export {
     registerUser,
     siginUser,
+    searchFirstOrLastName
 };
