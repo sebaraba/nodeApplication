@@ -25,13 +25,11 @@ const verifyToken = async (err, res, req, next) => {
         errorMessage.error = 'Please login first';
         return res.status(status.bad).send(errorMessage);
     }
-    console.log(token);
     
     if(!token) {
         res.status(status.bad).send(errorMessage);
         return res.status(status.bad).send(errorMessage);
     }
-
     try {
         const decodedObject = await jwt.verify(token, process.env.SECRET)
         req.user = {
