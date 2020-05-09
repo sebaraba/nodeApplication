@@ -19,7 +19,7 @@ const hashPassword = password => bcrypt.hashSync(password, salt);
  * @returns {boolean} True/Fales 
  */
 const comparePassword = (hashedPassword, password) => {
-  return bcrypt.compareSync(hashedPassword, password)
+  return bcrypt.compareSync(password, hashedPassword)
 }
 
 /**
@@ -77,16 +77,11 @@ const empty = (input) => {
  */
 
 const generateJWT = (id, email, first_name, last_name, is_admin) => {
-  const token = jwt.sign({
-    email,
-    user_id: id,
-    is_admin,
-    first_name,
-    last_name,
-  },
-  env.secret, 
-  { expiresIn: '3d'}
-  );
+  const token = jwt.sign({email, user_id: id,
+    is_admin,first_name,last_name,},
+    env.secret, 
+    { expiresIn: '3d'});
+    
   return token;
 };
 
