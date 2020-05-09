@@ -26,7 +26,6 @@ const createAdmin = async (req, res) => {
 
     const { is_admin } = req.user;
     const created_on = moment(new Date());
-    const adminUser = true;
 
     if(!is_admin === false) {
         errorMessage.error = 'Sorry you are unauthorized to create admin users';
