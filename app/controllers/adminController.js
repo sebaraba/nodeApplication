@@ -7,11 +7,11 @@ import {
     isValidPassword,
     isEmpty,
     generateJWT,
-  } from '../helpers/validations';
+  } from '../helpers/validations.js';
 
 import {
   errorMessage, successMessage, status,
-} from '../helpers/status';
+} from '../helpers/status.js';
 
 /**
  * Create A Admin
@@ -59,7 +59,7 @@ const createAdmin = async (req, res) => {
         first_name,
         last_name,
         hashedPassword,
-        adminUser,
+        true,
         created_on,
     ];
 
