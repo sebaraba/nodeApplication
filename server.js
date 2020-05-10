@@ -1,14 +1,16 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import 'babel-polyfill';
 import cors from 'cors';
 import env from './env.js';
 import usersRoute from './app/routes/userRoutes.js';
 import adminRoute from './app/routes/adminRoutes.js';
 import seedRoute from './app/routes/seedUserRoutes.js';
-import healthCheckRoute from './app/routes/healthCheckRoute.js'
+import healthCheckRoute from './app/routes/healthCheckRoute.js';
 
 const app = express();
 
+app.use(cookieParser());
 // parsing URL encoded bodies
 app.use(cors());
 // popopulating req body and parsing jason

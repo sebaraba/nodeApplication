@@ -105,6 +105,9 @@ const siginUser = async (req, res) => {
         delete dbResponse.password;
         const token = generateJWT(dbResponse.id, dbResponse.email, 
           dbResponse.first_name, dbResponse.last_name, dbResponse.is_admin);
+
+        res.cookie('token', token,  { sameSite: 'none', maxAge: 900000, httpOnly: true });
+        console.log(res);
         successMessage.data = dbResponse;
         successMessage.data.token = token;
         return res.status(status.success).send(successMessage);
@@ -125,6 +128,7 @@ const searchFirstOrLastName = async (req, res) => {
     try {
         const { rows } = await dbQuery.query(searchForQuery, [first_name, last_name]);
         const dbEntry = rows;
+        console.log(dbEntry);
         if(!dbEntry) {
             errorMessage.error = 'User not found';
             return res.status(status.notfound).send(errorMessage);
