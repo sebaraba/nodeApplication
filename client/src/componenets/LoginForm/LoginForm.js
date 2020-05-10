@@ -28,10 +28,7 @@ function LoginForm(props) {
         }
         axios.post(API_BASE_URL + 'login', payload)
             .then(function (res) {
-                console.log(res);
-
                 if(res.status === 200){
-
                     setState(prevState => ({
                         ...prevState,
                         'successMessage' : 'Login successful. Redirecting to home page..',
@@ -39,7 +36,7 @@ function LoginForm(props) {
                     redirectToHome();
                     props.showError(null)
                 }
-                else if(res.data.code === 204){
+                else if(res.status=== 204){
                     props.showError("Username and password do not match");
                 }
                 else{

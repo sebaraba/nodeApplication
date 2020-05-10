@@ -49,8 +49,8 @@ function RegisterForm(props) {
             }
             axios.post(API_BASE_URL + 'register', payload)
                 .then((res) => {
-                    console.log('BASE URL', res.data)
-                    if(res.data.code === 200) {
+                    console.log('BASE URL', API_BASE_URL)
+                    if(res.status === 200) {
                         console.log('success')
                         setState(pervState => ({
                             ...pervState,
