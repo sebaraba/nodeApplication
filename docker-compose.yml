@@ -1,0 +1,23 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./app
+    volumes:
+      - /app/node_modules 
+      - ./server:/app 
+    ports:
+      - '5000:5000'
+  client:
+    image:
+        loginform:latest
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '8080:80'
