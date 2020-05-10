@@ -7,8 +7,9 @@
   "scripts": {
     "test": "mocha",
     "create-dev-tables": "babel-node ./scripts/createUsersTable.js",
+    "seed-user": "babel-node ./scripts/createUsersTable.js",
     "start": "nodemon --watch . --exec babel-node -- server",
-    "setup": "npm-run-all -p start create-dev-tables"
+    "setup": "npm-run-all -p create-dev-tables start seed-user"
   },
   "repository": {
     "type": "git",

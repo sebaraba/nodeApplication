@@ -3,10 +3,10 @@ import cookieParser from 'cookie-parser';
 import 'babel-polyfill';
 import cors from 'cors';
 import env from './env.js';
-import usersRoute from './app/routes/userRoutes.js';
-import adminRoute from './app/routes/adminRoutes.js';
-import seedRoute from './app/routes/seedUserRoutes.js';
-import healthCheckRoute from './app/routes/healthCheckRoute.js';
+import usersRoute from './routes/userRoutes.js';
+import adminRoute from './routes/adminRoutes.js';
+import seedRoute from './routes/seedUserRoutes.js';
+import healthCheckRoute from './routes/healthCheckRoute.js';
 
 const app = express();
 
