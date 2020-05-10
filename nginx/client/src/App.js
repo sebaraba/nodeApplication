@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import './App.css';
 import Header from './componenets/Header/Headers.js';
 import Home from './componenets/Home/Home.js';
+import Admin from './componenets/Admin/Admin.js';
 import LoginForm from './componenets/LoginForm/LoginForm.js';
 import RegistrationForm from './componenets/RegisterForm/RegisterForm.js';
 import {
@@ -31,6 +32,9 @@ function App() {
               </Route>
               <Route path="/home">
                 <Home/>
+              </Route> 
+              <Route path="/admin">
+                <Admin/>
               </Route>
             </Switch>
         </div>
