@@ -7,7 +7,7 @@
   "scripts": {
     "test": "mocha",
     "create-dev-tables": "babel-node ./scripts/createUsersTable.js",
-    "seed-user": "babel-node ./scripts/createUsersTable.js",
+    "seed-user": "babel-node ./scripts/seedUser.js",
     "start": "nodemon --watch . --exec babel-node -- server",
     "setup": "npm-run-all -p create-dev-tables start seed-user"
   },
@@ -45,6 +45,7 @@
     "babel-register": "^6.26.0",
     "babel-watch": "^7.0.0",
     "chai": "^4.2.0",
-    "mocha": "^7.1.2"
+    "mocha": "^7.1.2",
+    "nodemon": "^2.0.3"
   }
 }

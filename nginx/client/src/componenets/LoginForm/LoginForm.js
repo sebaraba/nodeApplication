@@ -33,7 +33,11 @@ function LoginForm(props) {
                         ...prevState,
                         'successMessage' : 'Login successful. Redirecting to home page..',
                     }))
-                    redirectToHome();
+                    if(res.data.data.is_admin === true) {
+                        redirectToAdmin();
+                    } else {
+                        redirectToHome();
+                    }
                     props.showError(null)
                 }
                 else if(res.status=== 204){
@@ -50,6 +54,10 @@ function LoginForm(props) {
     const redirectToHome = () => {
         props.updateTitle('Home')
         props.history.push('/home');
+    }
+    const redirectToAdmin = () => {
+        props.updateTitle('Admin');
+        props.history.push('/admin')
     }
     const redirectToRegister = () => {
         props.history.push('/register'); 

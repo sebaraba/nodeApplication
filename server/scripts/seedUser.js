@@ -1,3 +1,3 @@
-import { seedUser } from '../controllers/seedUserController.js';
+import seedUser from '../controllers/seedUserController.js';
 
 seedUser();

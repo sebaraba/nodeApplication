@@ -8,6 +8,7 @@ import {
 import {
   status,
 } from '../helpers/status.js';
+import dbQuery from '../db/dev/dbQuery.js';
 
 const time = moment(new Date());
 
@@ -22,11 +23,11 @@ const seedUser = async (req, res) => {
                     VALUES(default,'admin.user@gmail.com', 'admin', 'root', '${hashPassword('Password1')}', true, '${time}')`;
     
     try {
-        const { rows } = await pool.query(seedUserQuery);
+        const { rows } = await dbQuery.query(seedUserQuery);
         const dbResponse = rows[0];
         if (!dbResponse) {
             return res.status(status.bad).send('Seeding was not successful');
-          }
+        }
         return res.status(status.created).send('Seeding users table was successful');
     } catch (error) {
         console.log(error);

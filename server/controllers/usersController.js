@@ -106,8 +106,7 @@ const siginUser = async (req, res) => {
         const token = generateJWT(dbResponse.id, dbResponse.email, 
           dbResponse.first_name, dbResponse.last_name, dbResponse.is_admin);
 
-        res.cookie('token', token,  { sameSite: 'none', maxAge: 900000, httpOnly: true });
-        console.log(res);
+        res.cookie('token', token,  { maxAge: 900000, httpOnly: true });
         successMessage.data = dbResponse;
         successMessage.data.token = token;
         return res.status(status.success).send(successMessage);
@@ -124,15 +123,28 @@ const siginUser = async (req, res) => {
  */
 const searchFirstOrLastName = async (req, res) => {
     const { first_name, last_name } = req.query;
-    const searchForQuery = `SELECT * FROM users WHERE first_name=$1 OR last_name=$2 ORDER BY id DESC`;
+    var searchForQuery = "";
+    if( first_name === undefined && last_name === undefined) {
+      searchForQuery = `SELECT * FROM users`;
+    } else {
+      searchForQuery = `SELECT * FROM users WHERE first_name=$1 OR last_name=$2 ORDER BY id DESC`;
+    }
     try {
-        const { rows } = await dbQuery.query(searchForQuery, [first_name, last_name]);
-        const dbEntry = rows;
-        console.log(dbEntry);
+        var { rows } = [];
+        if(searchForQuery.includes('WHERE')) {
+          rows = await dbQuery.query(searchForQuery, [first_name, last_name]);
+        } else {
+          rows = await dbQuery.query(searchForQuery);
+        }
+        const dbEntry = rows.rows.map( (row) => {
+          delete row.password
+          return row
+        });
         if(!dbEntry) {
             errorMessage.error = 'User not found';
             return res.status(status.notfound).send(errorMessage);
         }
+
         delete dbEntry.password;
         successMessage.data = dbEntry;
         return res.status(status.success).send(successMessage);
