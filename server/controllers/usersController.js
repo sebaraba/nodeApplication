@@ -106,8 +106,7 @@ const siginUser = async (req, res) => {
         const token = generateJWT(dbResponse.id, dbResponse.email, 
           dbResponse.first_name, dbResponse.last_name, dbResponse.is_admin);
 
-        res.cookie('token', token,  { sameSite: 'none', maxAge: 900000, httpOnly: true });
-        console.log(res);
+        res.cookie('token', token,  { maxAge: 900000, httpOnly: true });
         successMessage.data = dbResponse;
         successMessage.data.token = token;
         return res.status(status.success).send(successMessage);
