@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "mocha",
-    "create-dev-tables": "babel-node ./app/db/dev/dbConnection createAllTables",
+    "create-dev-tables": "babel-node ./scripts/createUsersTable.js",
     "start": "nodemon --watch . --exec babel-node -- server",
     "setup": "npm-run-all -p start create-dev-tables"
   },

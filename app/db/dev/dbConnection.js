@@ -1,4 +1,4 @@
-import pool from './pool';
+import pool from './pool.js';
 
 pool.on('connect', () => {
     console.log('connected to the db');
@@ -73,5 +73,3 @@ export {
     createAllTables,
     dropAllTables
 }
-
-require('make-runnable');
