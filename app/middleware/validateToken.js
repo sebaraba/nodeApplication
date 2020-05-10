@@ -6,7 +6,7 @@ import {
     errorMessage, status
 } from '../helpers/status.js';
 
-import env from '../../env.js';
+import env from '../env.js';
 
 dotenv.config();
 
